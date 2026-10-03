@@ -10,12 +10,12 @@
 /* ---------- ТВОИ ПАРОЛИ (6 штук, меняются по одному каждую неделю) ----------
    hint — подсказка (любая английская фраза), a и b — два числа от 0 до 99.   */
 var GATE_CODES = [
-  { hint: 'AQUA',          a: 67, b: 87 },
-  { hint: 'MAPLE LEAF',    a: 24, b: 51 },
-  { hint: 'EMBER',         a: 8,  b: 93 },
-  { hint: 'GOLDEN HOUR',   a: 45, b: 12 },
-  { hint: 'CHERRY WINE',   a: 76, b: 38 },
-  { hint: 'HARVEST MOON',  a: 59, b: 4  }
+  { hint: 'Осень',          a: 67, b: 87 },
+  { hint: 'Зима',    a: 24, b: 51 },
+  { hint: 'Карта',         a: 8,  b: 93 },
+  { hint: 'Золото',   a: 45, b: 12 },
+  { hint: 'Фишка',   a: 76, b: 38 },
+  { hint: 'Авакадо',  a: 59, b: 4  }
 ];
 var GATE_DAYS = 7;   // сколько дней запоминать вход
 
@@ -124,7 +124,7 @@ html.locked #gate{display:flex}\
     el.innerHTML = '<div class="gcard" id="gcard">\
 <div class="gbrand"><b>Black Russia</b> Cherry 🍒</div>\
 <h2 class="gtitle">Сейф редакторов</h2>\
-<div class="glabel">Подсказка недели</div><div class="ghint" id="ghint"></div>\
+<div class="glabel">Подсказка</div><div class="ghint" id="ghint"></div>\
 <div class="tl"><i class="lamp r on"></i><i class="lamp y"></i><i class="lamp g"></i></div>\
 <div class="gdial" id="gdial" tabindex="0" role="slider" aria-label="Диск сейфа" aria-valuemin="0" aria-valuemax="99">' + dialSVG() + '</div>\
 <div class="gstatus" id="gstatus" aria-live="polite">Набери первое число</div>\

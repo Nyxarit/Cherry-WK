@@ -6,6 +6,209 @@
 <title>Black Russia Cherry — редакторы</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍒%3C/text%3E%3C/svg%3E">
 <meta name="theme-color" content="#1a0e07">
+<script>
+/* ---------- ТВОИ ПАРОЛИ (6 штук, меняются по одному каждую неделю) ----------
+   hint — подсказка (любая английская фраза), a и b — два числа от 0 до 99.   */
+var GATE_CODES = [
+  { hint: 'AQUA',          a: 67, b: 87 },
+  { hint: 'MAPLE LEAF',    a: 24, b: 51 },
+  { hint: 'EMBER',         a: 8,  b: 93 },
+  { hint: 'GOLDEN HOUR',   a: 45, b: 12 },
+  { hint: 'CHERRY WINE',   a: 76, b: 38 },
+  { hint: 'HARVEST MOON',  a: 59, b: 4  }
+];
+var GATE_DAYS = 7;   // сколько дней запоминать вход
+
+(function () {
+  'use strict';
+  var KEY = 'cherry_unlock', root = document.documentElement;
+
+  /* уже входил в течение недели? */
+  try {
+    var d = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (d && Date.now() < d.until) return;
+  } catch (e) {}
+
+  root.classList.add('locked');
+
+  /* ---------- стили ---------- */
+  var css = '\
+html.locked{overflow:hidden}\
+html.locked header,html.locked main,html.locked footer{visibility:hidden}\
+#gate{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;overflow:auto;\
+ padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px));\
+ background:radial-gradient(ellipse at 20% 0%,rgba(232,116,30,.35),transparent 55%),radial-gradient(ellipse at 85% 100%,rgba(156,61,12,.5),transparent 55%),rgba(18,9,4,.9);\
+ -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}\
+html.locked #gate{display:flex}\
+#gate.out{animation:gOut .75s cubic-bezier(.2,.8,.2,1) forwards}\
+@keyframes gOut{to{opacity:0;transform:scale(1.08);filter:blur(10px)}}\
+.gcard{width:min(100%,410px);margin:auto;text-align:center;padding:26px 20px 22px;border-radius:30px;\
+ background:linear-gradient(180deg,rgba(60,30,12,.62),rgba(28,14,6,.7));border:1px solid rgba(255,184,119,.28);\
+ box-shadow:0 40px 90px -30px #000,0 0 70px -24px #e8741e,inset 0 1px 0 rgba(255,220,180,.18);\
+ animation:gIn .7s cubic-bezier(.2,.8,.2,1) both;font-family:var(--body,"Manrope","Segoe UI",Arial,sans-serif);color:#fdf1e3}\
+@keyframes gIn{from{opacity:0;transform:translateY(24px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}\
+.gcard.shake{animation:gShake .5s ease}\
+@keyframes gShake{20%{transform:translateX(-12px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(4px)}}\
+.gbrand{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#cdb199}\
+.gbrand b{color:#e5202e;text-shadow:0 0 14px rgba(229,32,46,.55)}\
+.gtitle{font-family:var(--head,"Unbounded","Arial Black",sans-serif);font-weight:700;font-size:1.35rem;margin:8px 0 14px}\
+.glabel{font-size:.78rem;color:#cdb199;letter-spacing:.14em;text-transform:uppercase}\
+.ghint{font-family:var(--head,"Unbounded","Arial Black",sans-serif);font-weight:900;font-size:clamp(1.5rem,8vw,2.3rem);letter-spacing:.06em;line-height:1.15;margin:6px 0 14px;\
+ background:linear-gradient(180deg,#fff2d6,#ffb877 55%,#e8741e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 22px rgba(232,116,30,.5))}\
+.tl{display:inline-flex;gap:14px;padding:10px 18px;border-radius:999px;background:linear-gradient(180deg,#0b0503,#1a0d06);border:1px solid rgba(255,184,119,.25);box-shadow:inset 0 2px 8px #000,0 8px 24px -12px #000}\
+.lamp{width:22px;height:22px;border-radius:50%;display:block;transition:background .3s,box-shadow .3s;box-shadow:inset 0 2px 4px rgba(0,0,0,.7)}\
+.lamp.r{background:#3a0d0d}.lamp.y{background:#3a2c0a}.lamp.g{background:#0b2f1a}\
+.lamp.r.on{background:#ff3b3b;box-shadow:0 0 14px #ff3b3b,0 0 36px rgba(255,59,59,.65)}\
+.lamp.y.on{background:#ffc23d;box-shadow:0 0 14px #ffc23d,0 0 36px rgba(255,194,61,.65)}\
+.lamp.g.on{background:#3bff8a;box-shadow:0 0 14px #3bff8a,0 0 36px rgba(59,255,138,.65)}\
+.lamp.blink{animation:gBlink .25s 3}\
+@keyframes gBlink{50%{opacity:.25}}\
+.gdial{width:min(78vw,320px);aspect-ratio:1;margin:16px auto 8px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;border-radius:24px;outline:0;\
+ filter:drop-shadow(0 22px 26px rgba(0,0,0,.65))}\
+.gdial:active{cursor:grabbing}\
+.gdial:focus-visible{box-shadow:0 0 0 3px #ffb877}\
+.gdial svg{width:100%;height:100%;display:block;pointer-events:none}\
+.gstatus{min-height:1.6em;font-weight:700;font-size:.95rem;color:#f3dcc4;margin:6px 0 12px}\
+.gstatus.ok{color:#ffc23d}.gstatus.bad{color:#ff6b5e}.gstatus.open{color:#3bff8a}\
+.gctl{display:flex;gap:10px;justify-content:center;align-items:stretch}\
+.gctl .btn{justify-content:center}\
+.gctl .gstep{width:52px;padding:0;font-size:1.5rem;line-height:1}\
+.gctl .main{flex:1;max-width:220px}\
+.gnote{margin-top:14px;font-size:.8rem;color:#cdb199}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  /* ---------- диск (SVG) ---------- */
+  function dialSVG() {
+    var t = '', i, a, big, mid, len, rings = '', scr = '', pts = [[2, 2], [318, 2], [2, 318], [318, 318]];
+    for (i = 0; i < 100; i++) {
+      a = i * 3.6; big = i % 10 === 0; mid = i % 5 === 0; len = big ? 17 : mid ? 12 : 7;
+      t += '<line x1="160" y1="25" x2="160" y2="' + (25 + len) + '" transform="translate(0.8 1.2) rotate(' + a + ' 160 160)" stroke="#000" stroke-opacity=".7" stroke-width="' + (big ? 2.8 : 1.7) + '" stroke-linecap="round"/>' +
+        '<line x1="160" y1="24" x2="160" y2="' + (24 + len) + '" transform="rotate(' + a + ' 160 160)" stroke="' + (big ? '#ffd08a' : mid ? '#e8a060' : '#b8764a') + '" stroke-width="' + (big ? 2.6 : 1.6) + '" stroke-linecap="round"/>';
+      if (big) t += '<text x="160" y="64.5" transform="rotate(' + a + ' 160 160)" text-anchor="middle" font-family="Unbounded,Arial Black,sans-serif" font-weight="700" font-size="14" fill="#000" fill-opacity=".75">' + i + '</text>' +
+        '<text x="160" y="63.5" transform="rotate(' + a + ' 160 160)" text-anchor="middle" font-family="Unbounded,Arial Black,sans-serif" font-weight="700" font-size="14" fill="#ffd08a">' + i + '</text>';
+      else if (mid) t += '<text x="160" y="58" transform="rotate(' + a + ' 160 160)" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-weight="700" font-size="7.5" fill="#c98a56">' + i + '</text>';
+    }
+    for (i = 52; i <= 66; i += 2) rings += '<circle cx="160" cy="160" r="' + i + '" fill="none" stroke="' + (i % 4 ? '#fff' : '#000') + '" stroke-opacity="' + (i % 4 ? '.13' : '.09') + '" stroke-width="1.4"/>';
+    for (i = 0; i < 4; i++) scr += '<g><circle cx="' + pts[i][0] + '" cy="' + pts[i][1] + '" r="9" fill="#000" fill-opacity=".45" transform="translate(1.5 2)"/><circle cx="' + pts[i][0] + '" cy="' + pts[i][1] + '" r="8.5" fill="url(#gKn)" stroke="#222" stroke-width="1"/><circle cx="' + pts[i][0] + '" cy="' + pts[i][1] + '" r="5.6" fill="none" stroke="#000" stroke-opacity=".25"/><line x1="' + (pts[i][0] - 5.2) + '" y1="' + pts[i][1] + '" x2="' + (pts[i][0] + 5.2) + '" y2="' + pts[i][1] + '" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" transform="rotate(' + (i * 41 + 18) + ' ' + pts[i][0] + ' ' + pts[i][1] + ')"/></g>';
+    return '<svg viewBox="-20 -20 360 360" xmlns="http://www.w3.org/2000/svg"><defs>\
+<linearGradient id="gCh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdfdfd"/><stop offset=".22" stop-color="#8f8f8f"/><stop offset=".48" stop-color="#f4f4f4"/><stop offset=".74" stop-color="#5f5f5f"/><stop offset="1" stop-color="#dcdcdc"/></linearGradient>\
+<linearGradient id="gSt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a4a40"/><stop offset=".5" stop-color="#2c2420"/><stop offset="1" stop-color="#17110e"/></linearGradient>\
+<radialGradient id="gPl" cx=".5" cy=".36" r=".78"><stop offset="0" stop-color="#4d2d1b"/><stop offset=".7" stop-color="#1d0f08"/><stop offset="1" stop-color="#0d0603"/></radialGradient>\
+<radialGradient id="gKn" cx=".33" cy=".28" r=".95"><stop offset="0" stop-color="#fff"/><stop offset=".42" stop-color="#cfcfcf"/><stop offset=".8" stop-color="#7d7d7d"/><stop offset="1" stop-color="#4a4a4a"/></radialGradient>\
+<linearGradient id="gGl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>\
+<filter id="gGw" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="3.2"/></filter></defs>\
+<rect x="-18" y="-18" width="356" height="356" rx="28" fill="url(#gSt)" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>\
+<rect x="-12" y="-12" width="344" height="344" rx="23" fill="none" stroke="rgba(0,0,0,.65)" stroke-width="2"/>' + scr +
+'<circle cx="160" cy="160" r="161" fill="#000" fill-opacity=".5" transform="translate(0 4)"/>\
+<circle cx="160" cy="160" r="158" fill="url(#gCh)"/><circle cx="160" cy="160" r="155" fill="none" stroke="url(#gGl)" stroke-width="2.4" opacity=".8"/>\
+<circle cx="160" cy="160" r="151" fill="#0e0704" stroke="rgba(0,0,0,.8)" stroke-width="2"/><circle cx="160" cy="160" r="148.5" fill="none" stroke="#c9c9c9" stroke-opacity=".55" stroke-width="1.4"/>\
+<g id="gPlate"><circle cx="160" cy="160" r="138" fill="url(#gPl)"/><circle cx="160" cy="160" r="138" fill="none" stroke="#000" stroke-opacity=".7" stroke-width="2.5"/><circle cx="160" cy="160" r="136" fill="none" stroke="#ffb877" stroke-opacity=".35" stroke-width="1"/>' + t +
+'<circle cx="160" cy="160" r="91" fill="none" stroke="#ffb877" stroke-opacity=".28" stroke-width="1.2"/><circle cx="160" cy="160" r="89.5" fill="none" stroke="#000" stroke-opacity=".6" stroke-width="1.2"/>\
+<circle cx="160" cy="163" r="86" fill="#000" fill-opacity=".45"/><circle cx="160" cy="160" r="82" fill="url(#gKn)"/>\
+<circle cx="160" cy="160" r="76" fill="none" stroke="#1c1c1c" stroke-opacity=".6" stroke-width="10" stroke-dasharray="3.3 3.32"/>\
+<circle cx="160" cy="160" r="76" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="10" stroke-dasharray="3.3 3.32" stroke-dashoffset="3.31"/>\
+<circle cx="160" cy="160" r="70.5" fill="none" stroke="#000" stroke-opacity=".4" stroke-width="1.4"/><circle cx="160" cy="160" r="69" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1"/>\
+<circle cx="160" cy="160" r="50" fill="url(#gKn)" opacity=".9"/>' + rings + '<circle cx="160" cy="160" r="52" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="1.6"/></g>\
+<circle cx="160" cy="160" r="46" fill="#1b0e07" stroke="#ffd08a" stroke-width="2.4"/><circle cx="160" cy="160" r="42" fill="none" stroke="#ffb877" stroke-opacity=".35" stroke-width="1"/>\
+<text id="gVal" x="160" y="161" text-anchor="middle" dominant-baseline="central" font-family="Unbounded,Arial Black,sans-serif" font-weight="900" font-size="34" fill="#ffd08a">00</text>\
+<ellipse cx="128" cy="114" rx="38" ry="15" transform="rotate(-38 128 114)" fill="url(#gGl)" opacity=".5"/>\
+<path d="M34 112 C54 48 118 18 192 20 C128 38 78 70 52 130Z" fill="url(#gGl)" opacity=".45"/>\
+<circle cx="160" cy="-8" r="6.5" fill="#ff3b3b" filter="url(#gGw)"/><circle cx="160" cy="-8" r="5" fill="#ff5a4a" stroke="#fff" stroke-opacity=".6" stroke-width="1"/>\
+<polygon points="149,2 171,2 160,33" fill="#e5202e" filter="url(#gGw)"/><polygon points="149,2 171,2 160,33" fill="#ff3b3b" stroke="#fff" stroke-opacity=".55" stroke-width="1"/></svg>';
+  }
+
+  /* ---------- окно ---------- */
+  function build() {
+    var el = document.createElement('div');
+    el.id = 'gate'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Вход');
+    el.innerHTML = '<div class="gcard" id="gcard">\
+<div class="gbrand"><b>Black Russia</b> Cherry 🍒</div>\
+<h2 class="gtitle">Сейф редакторов</h2>\
+<div class="glabel">Подсказка недели</div><div class="ghint" id="ghint"></div>\
+<div class="tl"><i class="lamp r on"></i><i class="lamp y"></i><i class="lamp g"></i></div>\
+<div class="gdial" id="gdial" tabindex="0" role="slider" aria-label="Диск сейфа" aria-valuemin="0" aria-valuemax="99">' + dialSVG() + '</div>\
+<div class="gstatus" id="gstatus" aria-live="polite">Набери первое число</div>\
+<div class="gctl"><button class="btn gstep" id="gm" aria-label="Меньше">‹</button><button class="btn main" id="gok">Ввести 1-е число</button><button class="btn gstep" id="gp" aria-label="Больше">›</button></div>\
+<p class="gnote">Крути диск мышью или пальцем. Вход запоминается на ' + GATE_DAYS + ' дн.</p></div>';
+    document.body.insertBefore(el, document.body.firstChild);
+    run(el);
+  }
+
+  function run(gate) {
+    var $ = function (s) { return gate.querySelector(s); };
+    var weekNo = Math.floor((Date.now() - 4 * 864e5) / 6048e5);           // недели считаются с понедельника
+    var code = GATE_CODES[((weekNo % GATE_CODES.length) + GATE_CODES.length) % GATE_CODES.length];
+    $('#ghint').textContent = code.hint;
+
+    var dial = $('#gdial'), plate = $('#gPlate'), valT = $('#gVal'), status = $('#gstatus'), ok = $('#gok'), card = $('#gcard');
+    var lamps = { r: $('.lamp.r'), y: $('.lamp.y'), g: $('.lamp.g') };
+    var raw = 0, v = 0, drag = false, last = 0, step = 0, busy = false;
+    var mod = function (n) { return ((n % 100) + 100) % 100; };
+    var vib = function (p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+
+    function render() {
+      plate.setAttribute('transform', 'rotate(' + (-v * 3.6) + ' 160 160)');
+      valT.textContent = (v < 10 ? '0' : '') + v; dial.setAttribute('aria-valuenow', v);
+    }
+    function upd() { var n = mod(Math.round(-raw / 3.6)); if (n !== v) { v = n; render(); vib(4); } }
+    function nudge(dv) { raw = -(v + dv) * 3.6; upd(); }
+    function light(r, y, g, blink) {
+      lamps.r.classList.toggle('on', r); lamps.y.classList.toggle('on', y); lamps.g.classList.toggle('on', g);
+      lamps.r.classList.toggle('blink', !!blink);
+    }
+    function say(txt, cls) { status.textContent = txt; status.className = 'gstatus ' + (cls || ''); }
+    function label() { ok.textContent = step === 0 ? 'Ввести 1-е число' : 'Ввести 2-е число'; }
+
+    function angle(e) {
+      var r = dial.getBoundingClientRect();
+      return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+    }
+    dial.addEventListener('pointerdown', function (e) { drag = true; last = angle(e); try { dial.setPointerCapture(e.pointerId); } catch (x) {} });
+    dial.addEventListener('pointermove', function (e) {
+      if (!drag) return; var a = angle(e), d = a - last;
+      if (d > 180) d -= 360; if (d < -180) d += 360; raw += d; last = a; upd();
+    });
+    var stop = function () { drag = false; }; dial.addEventListener('pointerup', stop); dial.addEventListener('pointercancel', stop);
+    dial.addEventListener('wheel', function (e) { e.preventDefault(); nudge(e.deltaY > 0 ? 1 : -1); }, { passive: false });
+    $('#gm').onclick = function () { nudge(-1); };
+    $('#gp').onclick = function () { nudge(1); };
+
+    function fail() {
+      busy = true; step = 0; light(true, false, false, true); say('✖ Неверно. Начни сначала', 'bad'); vib([80, 50, 80]);
+      card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+      setTimeout(function () { busy = false; light(true, false, false); label(); say('Набери первое число'); }, 1000);
+    }
+    function open() {
+      busy = true; light(false, false, true); say('🍒 Доступ открыт', 'open'); vib(40);
+      try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), until: Date.now() + GATE_DAYS * 864e5 })); } catch (e) {}
+      setTimeout(function () {
+        gate.classList.add('out');
+        setTimeout(function () { root.classList.remove('locked'); gate.remove(); }, 760);
+      }, 650);
+    }
+    function confirm() {
+      if (busy) return;
+      if (step === 0) {
+        if (v === code.a) { step = 1; light(false, true, false); say('✔ Первое число верно, набери второе', 'ok'); label(); vib(30); } else fail();
+      } else {
+        if (v === code.b) open(); else fail();
+      }
+    }
+    ok.onclick = confirm;
+    document.addEventListener('keydown', function (e) {
+      if (!document.getElementById('gate')) return;
+      var k = e.key;
+      if (k === 'ArrowRight' || k === 'ArrowUp') { e.preventDefault(); nudge(1); }
+      else if (k === 'ArrowLeft' || k === 'ArrowDown') { e.preventDefault(); nudge(-1); }
+      else if (k === 'Enter') { e.preventDefault(); confirm(); }
+    });
+    render(); label();
+  }
+
+  if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
+})();
+
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">

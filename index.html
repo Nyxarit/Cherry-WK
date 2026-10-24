@@ -268,19 +268,19 @@ html.locked header,html.locked main,html.locked footer{visibility:hidden}\
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#1a0e07; --red:#e5202e; --accent:#e8741e; --deep:#9c3d0c; --gold:#f5b041; --leaf:#ffb877;
-  --text:#fdf1e3; --muted:#cdb199; --line:rgba(255,184,119,.2); --glass:rgba(40,20,8,.55);
+  --ink:#100d0b; --red:#8f3340; --accent:#b96b32; --deep:#63351f; --gold:#d7a45b; --leaf:#d8a66a;
+  --text:#f3e9dc; --muted:#b8a493; --line:rgba(196,145,91,.19); --glass:rgba(28,22,18,.76);
   --head:'Unbounded','Arial Black',sans-serif; --body:'Manrope','Segoe UI',Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scrollbar-width:thin;scrollbar-color:#e8741e #1a0e07}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scrollbar-width:thin;scrollbar-color:#a86432 #100d0b}
 body{font-family:var(--body);color:var(--text);background:var(--ink);min-height:100vh;line-height:1.6;overflow-x:hidden;
   padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 .bg{position:fixed;inset:0;z-index:-3;background:
-  radial-gradient(ellipse at 15% 0%,rgba(232,116,30,.38),transparent 55%),
-  radial-gradient(ellipse at 90% 100%,rgba(156,61,12,.5),transparent 55%),
-  radial-gradient(ellipse at 60% 40%,rgba(245,176,65,.12),transparent 60%),
-  linear-gradient(180deg,#2a1408,#1a0e07 70%)}
+  radial-gradient(ellipse at 12% 0%,rgba(139,67,35,.28),transparent 52%),
+  radial-gradient(ellipse at 92% 100%,rgba(75,39,54,.24),transparent 52%),
+  radial-gradient(ellipse at 60% 40%,rgba(161,108,58,.08),transparent 60%),
+  linear-gradient(180deg,#211811,#100d0b 72%)}
 #petals{position:fixed;inset:0;z-index:-1;pointer-events:none}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
@@ -311,8 +311,8 @@ main{max-width:1120px;margin:0 auto;padding:36px 20px 80px;min-height:78vh}
 
 .hero{padding:clamp(28px,7vw,84px) 0 40px;max-width:760px}
 .hero h1{font-family:var(--head);font-weight:900;font-size:clamp(2.4rem,8.6vw,5rem);line-height:1.04;letter-spacing:-.02em;
-  background:linear-gradient(180deg,#ff6b5e 0%,#e5202e 50%,#9c0f1a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 8px 40px rgba(229,32,46,.45))}
+  background:linear-gradient(180deg,#f0d3a0 0%,#c58b4d 48%,#75404a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 8px 36px rgba(151,89,48,.28))}
 .hero p{margin-top:20px;font-size:clamp(1rem,2.4vw,1.2rem);color:#f3dcc4;max-width:560px}
 .em{-webkit-text-fill-color:initial}
 
@@ -422,10 +422,39 @@ footer{border-top:1px solid var(--line);text-align:center;color:var(--muted);fon
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ffb877,#e8741e 45%,#9c3d0c);border-radius:20px;border:2px solid #1a0e07;box-shadow:0 0 8px rgba(232,116,30,.5)}
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#ffd29e,#f5882f 45%,#e8741e)}
 ::-webkit-scrollbar-corner{background:#1a0e07}
+
+/* 🍂 ТЁМНАЯ ОСЕНЬ + ЛЁГКАЯ HALLOWEEN-АТМОСФЕРА */
+body{background-color:#100d0b}
+header{background:rgba(16,13,11,.82);border-bottom-color:rgba(190,137,78,.16)}
+.logo .mark{box-shadow:0 0 0 1px rgba(190,137,78,.42),0 7px 22px -8px rgba(95,48,29,.8)}
+.logo .lt b{color:#c18b5d;text-shadow:0 0 16px rgba(193,139,93,.22)}
+nav a.on,.btn.main{background:linear-gradient(135deg,#a96837,#69402b);box-shadow:0 8px 22px -12px rgba(174,105,55,.55)}
+.tile,.item,.tcard,.panel,.card{background:rgba(28,22,18,.78);border-color:rgba(196,145,91,.17)}
+.tile:hover,.tcard:hover{border-color:rgba(194,140,83,.45);box-shadow:0 24px 50px -22px rgba(122,72,41,.6)}
+.btn.main{border-color:rgba(220,170,110,.18)}
+.pen{color:#d78a66}
+.halloween-decor{position:fixed;right:clamp(12px,3vw,36px);bottom:clamp(12px,3vh,28px);z-index:5;display:flex;align-items:center;gap:8px;pointer-events:none;opacity:.62;filter:drop-shadow(0 4px 14px rgba(0,0,0,.55));}
+.halloween-decor span{display:block;animation:spookyFloat 5s ease-in-out infinite}
+.halloween-decor .h-moon{font-size:clamp(22px,3vw,34px);color:#d7b985;transform:rotate(-18deg);text-shadow:0 0 18px rgba(215,185,133,.3)}
+.halloween-decor .h-pumpkin{font-size:clamp(25px,3.5vw,39px);animation-delay:-1.4s}
+.halloween-decor .h-ghost{font-size:clamp(20px,2.6vw,30px);opacity:.78;animation-delay:-2.8s}
+@keyframes spookyFloat{0%,100%{translate:0 0;rotate:-4deg}50%{translate:0 -8px;rotate:5deg}}
+/* Тихие подсветки вместо яркого неона */
+.tile::before{background:radial-gradient(360px circle at var(--mx,50%) var(--my,0%),rgba(172,112,62,.24),transparent 65%)}
+.item.open{border-color:rgba(194,140,83,.34);box-shadow:0 18px 40px -24px rgba(122,72,41,.55)}
+.item>button .pl{background:rgba(190,137,78,.13)}
+.item>button .pl::before,.item>button .pl::after{background:#d8a66a}
+.item.open .pl{background:#86512f}
+:focus-visible{outline-color:#d8a66a}
+::-webkit-scrollbar-track{background:#100d0b}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#c18b5d,#80502f 55%,#4c3027);border-color:#100d0b;box-shadow:0 0 8px rgba(145,89,49,.24)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#dbb17c,#a66b3b 55%,#69402b)}
+@media(max-width:560px){.halloween-decor{right:10px;bottom:10px;opacity:.46}.halloween-decor .h-ghost{display:none}}
+@media(prefers-reduced-motion:reduce){.halloween-decor span{animation:none}}
 </style>
 </head>
 <body>
-<div class="bg"></div><canvas id="petals"></canvas>
+<div class="bg"></div><canvas id="petals"></canvas><div class="halloween-decor" aria-hidden="true"><span class="h-moon">☾</span><span class="h-pumpkin">🎃</span><span class="h-ghost">👻</span></div>
 
 <header>
   <div class="bar">
@@ -600,7 +629,7 @@ async function drawCover(cv, t){
   let size = 130; const kind = t.cover; c.font = `900 ${size}px Unbounded, Arial Black, sans-serif`;
   while (c.measureText(kind).width > W*.7) { size -= 4; c.font = `900 ${size}px Unbounded, Arial Black, sans-serif`; }
   const tg = c.createLinearGradient(0, H*.4, 0, H*.52); tg.addColorStop(0, '#fff'); tg.addColorStop(1, '#ffd08a');
-  c.shadowColor = 'rgba(229,32,46,.9)'; c.shadowBlur = 36; c.fillStyle = tg; c.fillText(kind, W/2, H*.47);
+  c.shadowColor = 'rgba(151,89,48,.7)'; c.shadowBlur = 36; c.fillStyle = tg; c.fillText(kind, W/2, H*.47);
   c.shadowBlur = 0; c.fillText(kind, W/2, H*.47);
   c.fillStyle = '#f5b041'; c.fillRect(W/2 - 90, H*.55, 180, 4);
   c.font = '600 36px Manrope, Arial, sans-serif'; c.fillStyle = '#f8e3cc'; c.fillText(t.desc, W/2, H*.62);
@@ -608,7 +637,7 @@ async function drawCover(cv, t){
   c.textAlign = 'left'; c.font = '900 44px Unbounded, Arial Black, sans-serif';
   const a1 = 'BLACK RUSSIA', a2 = ' CHERRY ', wA = c.measureText(a1).width, wB = c.measureText(a2).width, wC = 60, x0 = (W - wA - wB - wC)/2, yy = H - 62;
   c.shadowColor = 'rgba(0,0,0,.8)'; c.shadowBlur = 14;
-  c.fillStyle = '#e5202e'; c.fillText(a1, x0, yy);
+  c.fillStyle = '#b96b55'; c.fillText(a1, x0, yy);
   c.fillStyle = '#fff'; c.fillText(a2, x0 + wA, yy);
   c.font = '44px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif'; c.fillText('🍒', x0 + wA + wB, yy);
   c.shadowBlur = 0;

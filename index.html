@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Black Russia Cherry — редакторы</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍒%3C/text%3E%3C/svg%3E">
-<meta name="theme-color" content="#1a0e07">
+<meta name="theme-color" content="#0b080e">
 <script>
 /* ---------- ТВОИ ПИН-КОДЫ (6 штук, каждую неделю подставляется следующий) ----------
    hint — подсказка (любая английская фраза), a и b — две пары цифр от 0 до 99.
@@ -451,6 +451,51 @@ nav a.on,.btn.main{background:linear-gradient(135deg,#a96837,#69402b);box-shadow
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#dbb17c,#a66b3b 55%,#69402b)}
 @media(max-width:560px){.halloween-decor{right:10px;bottom:10px;opacity:.46}.halloween-decor .h-ghost{display:none}}
 @media(prefers-reduced-motion:reduce){.halloween-decor span{animation:none}}
+
+/* 🎃 CHERRY — DARK AUTUMN / HALLOWEEN THEME (согласовано с дизайном второго сайта) */
+:root{
+  --ink:#0b080e; --red:#9b3155; --accent:#e9782e; --deep:#4b1d43;
+  --gold:#ffad45; --leaf:#ff9d42; --text:#fff0e7; --muted:#b9a0b9;
+  --line:rgba(172,83,115,.25); --glass:rgba(23,16,29,.82);
+}
+html{scrollbar-color:#e9782e #0b080e}
+body{background-color:#0b080e}
+.bg{
+ background:
+  radial-gradient(ellipse at 8% 0%,rgba(163,75,31,.22),transparent 34%),
+  radial-gradient(ellipse at 86% 16%,rgba(124,49,139,.20),transparent 30%),
+  radial-gradient(ellipse at 52% 72%,rgba(71,21,42,.22),transparent 45%),
+  linear-gradient(180deg,#100a16,#0a080e 65%,#160b17)
+}
+header{background:rgba(11,8,14,.84);border-bottom-color:rgba(172,83,115,.25)}
+.logo .mark{box-shadow:0 0 0 1px rgba(233,120,46,.48),0 7px 22px -8px rgba(124,49,139,.55)}
+.logo .lt b{color:#ff9d42;text-shadow:0 0 16px rgba(255,102,95,.28)}
+nav a.on,.btn.main,.btn.main:hover{
+ background:linear-gradient(135deg,#9b3155,#4b1d43);
+ box-shadow:0 8px 24px -12px rgba(233,120,46,.6)
+}
+.tile,.item,.tcard,.panel,.card{
+ background:rgba(23,16,29,.82);border-color:rgba(172,83,115,.25)
+}
+.tile::before{background:radial-gradient(360px circle at var(--mx,50%) var(--my,0%),rgba(233,120,46,.28),transparent 65%)}
+.tile:hover,.tcard:hover{border-color:rgba(255,157,66,.48);box-shadow:0 24px 50px -22px rgba(124,49,139,.55)}
+.back:hover,.btn:hover,nav a:hover{background-color:rgba(155,49,85,.22)}
+.item.open{border-color:rgba(255,157,66,.42);box-shadow:0 18px 40px -24px rgba(124,49,139,.6)}
+.item>button .pl{background:rgba(155,49,85,.22)}
+.item>button .pl::before,.item>button .pl::after{background:#ff9d42}
+.item.open .pl{background:#9b3155}
+.btn{border-color:rgba(155,49,85,.5);background:linear-gradient(140deg,rgba(85,33,63,.75),rgba(43,23,46,.88))}
+.btn.main{background:linear-gradient(135deg,#9b3155,#4b1d43);border-color:rgba(255,157,66,.25)}
+.pen{color:#ff7a45}
+.halloween-decor .h-moon{color:#c9a5d9;text-shadow:0 0 18px rgba(124,49,139,.42)}
+.halloween-decor .h-pumpkin{filter:drop-shadow(0 0 10px rgba(233,120,46,.35))}
+.halloween-decor .h-ghost{filter:drop-shadow(0 0 10px rgba(201,165,217,.35))}
+footer{border-top-color:rgba(172,83,115,.25)}
+::-webkit-scrollbar-track{background:#0b080e}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff9d42,#9b3155 55%,#4b1d43);border-color:#0b080e;box-shadow:0 0 8px rgba(233,120,46,.25)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#ffc078,#bd4665 55%,#6c2b60)}
+@media(max-width:820px){nav{background:rgba(16,10,22,.97);border-bottom-color:rgba(172,83,115,.25)}}
+
 </style>
 </head>
 <body>
@@ -729,14 +774,23 @@ window.addEventListener('hashchange', render); render();
   const size = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
   size(); addEventListener('resize', size);
   const n = innerWidth < 700 ? 14 : 26;
-  for (let i = 0; i < n; i++) P.push({x:Math.random()*W, y:Math.random()*H, r:7+Math.random()*9, v:.4+Math.random()*.7, s:Math.random()*6.28, w:.01+Math.random()*.015, a:.35+Math.random()*.4, col:LEAF[(Math.random()*LEAF.length)|0]});
+  for (let i = 0; i < n; i++) {
+    const spooky = i % 7 === 0 ? ['🎃','👻','🦇'][(Math.random()*3)|0] : '';
+    P.push({x:Math.random()*W, y:Math.random()*H, r:spooky ? 10+Math.random()*5 : 7+Math.random()*9, v:.4+Math.random()*.7, s:Math.random()*6.28, w:.01+Math.random()*.015, a:spooky ? .42 : .35+Math.random()*.4, col:LEAF[(Math.random()*LEAF.length)|0], spooky});
+  }
   (function loop(){
     c.clearRect(0, 0, W, H);
     for (const p of P) {
       p.y += p.v; p.s += p.w; p.x += Math.sin(p.s) * .8 + .2;
       if (p.y > H + 30) { p.y = -30; p.x = Math.random() * W; }
       if (p.x > W + 30) p.x = -30;
-      c.globalAlpha = p.a; leaf(c, p.x, p.y, p.r, p.s * 2, p.col);
+      c.globalAlpha = p.a;
+      if (p.spooky) {
+        c.font = Math.round(p.r * 2.1) + 'px system-ui, sans-serif';
+        c.fillText(p.spooky, p.x, p.y);
+      } else {
+        leaf(c, p.x, p.y, p.r, p.s * 2, p.col);
+      }
     }
     c.globalAlpha = 1; requestAnimationFrame(loop);
   })();
